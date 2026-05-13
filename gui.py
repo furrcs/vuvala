@@ -314,7 +314,7 @@ class VenvManagerGUI:
 
         dialog = tk.Toplevel(self.root)
         dialog.title("Сохранить как шаблон")
-        dialog.geometry("400x300")
+        dialog.geometry("500x400")
         dialog.transient(self.root)
         dialog.grab_set()
         
