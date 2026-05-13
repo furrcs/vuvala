@@ -1,8 +1,7 @@
 import subprocess
 import requests
-from typing import List, Dict, Tuple
-from env_manager import VenvManager
 import logging
+from env_manager import VenvManager
 
 logger = logging.getLogger(__name__)
 
@@ -11,16 +10,14 @@ class PackageManager:
         self.vm = venv_manager
     
     def install_package(self, venv_name: str, package: str) -> tuple:
-        """Установка пакета в окружение"""
         pip_path = self.vm.get_pip_path(venv_name)
-        
-        # Проверяем существование окружения
+
         venv_path = self.vm.base_path / venv_name
         if not venv_path.exists():
             return False, f"Окружение '{venv_name}' не найдено"
         
         try:
-            result = subprocess.run(
+            subprocess.run(
                 [pip_path, "install", package],
                 check=True,
                 capture_output=True,
@@ -43,7 +40,6 @@ class PackageManager:
                 return False, f"Ошибка установки: {error_msg[:200]}"
     
     def install_from_template(self, venv_name: str, template_name: str, server_url: str = "http://127.0.0.1:8000") -> str:
-        """Установка пакетов из шаблона с сервера"""
         try:
             response = requests.get(f"{server_url}/templates", timeout=5)
             if response.status_code == 200:
@@ -65,7 +61,6 @@ class PackageManager:
             return f"Ошибка: {str(e)}"
     
     def list_packages(self, venv_name: str) -> tuple:
-        """Список установленных пакетов"""
         pip_path = self.vm.get_pip_path(venv_name)
         
         try:

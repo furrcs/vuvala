@@ -1,8 +1,7 @@
 import subprocess
-import sys
-import os
-from pathlib import Path
 import logging
+import sys
+from pathlib import Path
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -14,14 +13,13 @@ class VenvManager:
         logger.info(f"Базовая директория: {self.base_path.absolute()}")
     
     def create_venv(self, name: str) -> tuple:
-        """Создание виртуального окружения"""
         venv_path = self.base_path / name
         
         if venv_path.exists():
             return False, f"Окружение '{name}' уже существует"
         
         try:
-            result = subprocess.run(
+            subprocess.run(
                 [sys.executable, "-m", "venv", str(venv_path)],
                 check=True,
                 capture_output=True,
@@ -47,7 +45,6 @@ class VenvManager:
             return False, f"Ошибка: {str(e)}"
     
     def _verify_venv(self, venv_path: Path) -> bool:
-        """Проверка корректности создания venv"""
         if sys.platform == "win32":
             python_path = venv_path / "Scripts" / "python.exe"
         else:
@@ -56,7 +53,6 @@ class VenvManager:
         return python_path.exists()
     
     def delete_venv(self, name: str) -> tuple:
-        """Удаление виртуального окружения"""
         venv_path = self.base_path / name
         if not venv_path.exists():
             return False, f"Окружение '{name}' не найдено"
@@ -71,7 +67,6 @@ class VenvManager:
             return False, f"Ошибка удаления: {str(e)}"
     
     def list_venvs(self) -> list:
-        """Список всех окружений"""
         venvs = []
         if not self.base_path.exists():
             return venvs
@@ -82,13 +77,11 @@ class VenvManager:
         return sorted(venvs)
     
     def get_pip_path(self, name: str) -> str:
-        """Путь к pip в окружении"""
         if sys.platform == "win32":
             return str(self.base_path / name / "Scripts" / "pip.exe")
         return str(self.base_path / name / "bin" / "pip")
     
     def get_python_path(self, name: str) -> str:
-        """Путь к python в окружении"""
         if sys.platform == "win32":
             return str(self.base_path / name / "Scripts" / "python.exe")
         return str(self.base_path / name / "bin" / "python")
